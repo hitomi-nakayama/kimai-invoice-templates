@@ -3,7 +3,6 @@
 {%- set marginBottom = pdfContext.setOption('margin_bottom', 20) -%}
 {%- set marginLeft = pdfContext.setOption('margin_left', 25) -%}
 {%- set marginRight = pdfContext.setOption('margin_right', 20) -%}
-
 {# You can override the following variables in your own template to customize the template: #}
 {# set logo url #}
 {% set logoUrl = logoUrl|default(config('theme.branding.logo')) %}
@@ -17,13 +16,9 @@
 {% set invoiceSenderAddress = invoiceSenderAddress|default(model.template.address|nl2str(' &bull; ')) %}
 {# set if fold and hole marks are printed #}
 {% set showFoldHoleMarks = showFoldHoleMarks ?? true %}
-
 <!DOCTYPE html>
-{% set fallback = app.request is not null ? app.request.locale : 'en' %}
-{% set language = model.template.language|default(fallback) %}
-{% set isDecimal = model.template.decimalDuration|default(false) %}
-{% set currency = model.currency %}
-<html lang="{{ language }}">
+<html lang="{{ invoice['invoice.language'] }}">
+{% set currency = invoice['invoice.currency'] %}
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}{{ model.invoiceNumber }}-{{ model.customer.company|default(model.customer.name)|u.snake }}{% endblock %}</title>
@@ -372,7 +367,7 @@ mpdf-->
                 <tbody>
                 {% for entry in model.calculator.entries %}
                     <!-- CONTENT_PART -->
-                    {% set duration = entry.duration|duration(isDecimal) %}
+                    {% set duration = entry.duration|duration(true) %}
                     {% if entry.fixedRate is not null %}
                         {% set rate = entry.fixedRate %}
                         {% set duration = entry.amount|amount %}

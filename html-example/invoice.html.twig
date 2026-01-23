@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-{% set fallback = app.request is not null ? app.request.locale : 'en' %}
-{% set language = model.template.language|default(fallback) %}
-<html lang="{{ language }}">
+<html lang="{{ invoice['invoice.language'] }}">
 <head>
     <meta charset="utf-8">
     <title>{{ model.invoiceNumber }}-{{ model.customer.company|default(model.customer.name)|u.snake }}</title>
@@ -13,7 +11,7 @@
     <div class="wrapper">
         <section class="invoice">
             {% set isDecimal = true %}
-            {% set currency = model.currency %}
+            {% set currency = invoice['invoice.currency'] %}
             {% set project = model.query.project %}
             <div class="row">
                 <div class="col-xs-12">
