@@ -13,7 +13,7 @@
 {# set an introduction text that is displayed before the invoice positions #}
 {% set introductionText = introductionText|default(false) %}
 {# set the sender address that is displayed in the address window #}
-{% set invoiceSenderAddress = invoiceSenderAddress|default(model.template.address|nl2str(' &bull; ')) %}
+{% set invoiceSenderAddress = invoiceSenderAddress|default(invoice['template.address']|nl2str(' &bull; ')) %}
 {# set if fold and hole marks are printed #}
 {% set showFoldHoleMarks = showFoldHoleMarks ?? true %}
 <!DOCTYPE html>
@@ -21,7 +21,7 @@
 {% set currency = invoice['invoice.currency'] %}
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}{{ model.invoiceNumber }}-{{ model.customer.company|default(model.customer.name)|u.snake }}{% endblock %}</title>
+    <title>{% block title %}{{ invoice['invoice.number'] }}-{{ invoice['customer.company']|default(invoice['customer.name'])|u.snake }}{% endblock %}</title>
     {% block invoice_styles %}
         <style type="text/css">
             @page {
@@ -206,7 +206,7 @@
                     {% endblock %}
                     {% block header_company %}
                     <td class="header-company">
-                        {{ model.template.company }}
+                        {{ invoice['template.company'] }}
                     </td>
                     {% endblock %}
                 </tr>
@@ -227,20 +227,20 @@
             <tr>
                 {% block footer_address %}
                 <td style="width: 28%">
-                    {{ model.template.address|nl2br }}
-                    {% if model.template.vatId %}
-                        <br>{{ 'vat_id'|trans }}: {{ model.template.vatId }}
+                    {{ invoice['template.address']|nl2br }}
+                    {% if invoice['template.vat_id'] %}
+                        <br>{{ 'vat_id'|trans }}: {{ invoice['template.vat_id'] }}
                     {% endif %}
                 </td>
                 {% endblock %}
                 {% block footer_contact %}
                 <td>
-                    {{ model.template.contact|nl2br }}
+                    {{ invoice['template.contact']|nl2br }}
                 </td>
                 {% endblock %}
                 {% block footer_payment_details %}
                 <td width="33%">
-                    {{ model.template.paymentDetails|nl2br }}
+                    {{ invoice['template.payment_details']|nl2br }}
                 </td>
                 {% endblock %}
             </tr>
@@ -265,12 +265,12 @@ mpdf-->
 
         {% block invoice_address_recipient %}
             <address class="address-recipient">
-                {{ model.customer.company|default(model.customer.name) }}<br>
-                {% if model.customer.contact %}
-                    {{ model.customer.contact }}<br>
+                {{ invoice['customer.company']|default(invoice['customer.name']) }}<br>
+                {% if invoice['customer.contact'] %}
+                    {{ invoice['customer.contact'] }}<br>
                 {% endif %}
-                {{ model.customer.address|nl2br }}<br>
-                {{ model.customer.country|country_name }}
+                {{ invoice['customer.address']|nl2br }}<br>
+                {{ invoice['customer.country']|country_name }}
             </address>
         {% endblock %}
     </div>
@@ -282,7 +282,7 @@ mpdf-->
             {% block invoice_details_invoice_number %}
                 <tr>
                     <th class="invoice-details-label">{{ 'invoice.number'|trans }}:</th>
-                    <td class="invoice-details-value">{{ model.invoiceNumber }}</td>
+                    <td class="invoice-details-value">{{ invoice['invoice.number'] }}</td>
                 </tr>
             {% endblock %}
             {% block invoice_details_service_date %}
@@ -299,10 +299,10 @@ mpdf-->
                 </tr>
             {% endblock %}
             {% block invoice_details_customer_vatid %}
-                {% if model.customer.vatId is not empty %}
+                {% if invoice['customer.vat_id'] is not empty %}
                     <tr>
                         <th class="invoice-details-label">{{ 'vat_id'|trans }}:</th>
-                        <td class="invoice-details-value">{{ model.customer.vatId }}</td>
+                        <td class="invoice-details-value">{{ invoice['customer.vat_id'] }}</td>
                     </tr>
                     <tr>
                         <td colspan="2">&nbsp;</td>
@@ -340,7 +340,7 @@ mpdf-->
         <!-- CONTENT_PART -->
         {% block invoice_content_subject %}
             <div class="subject">
-                <h1>{{ model.template.title }}</h1>
+                <h1>{{ invoice['template.title'] }}</h1>
             </div>
         {% endblock %}
 

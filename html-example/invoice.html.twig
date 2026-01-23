@@ -2,7 +2,7 @@
 <html lang="{{ invoice['invoice.language'] }}">
 <head>
     <meta charset="utf-8">
-    <title>{{ model.invoiceNumber }}-{{ model.customer.company|default(model.customer.name)|u.snake }}</title>
+    <title>{% block title %}{{ invoice['invoice.number'] }}-{{ invoice['customer.company']|default(invoice['customer.name'])|u.snake }}{% endblock %}</title>
     <style type="text/css">
         {{ encore_entry_css_source('invoice')|raw }}
     </style>
@@ -16,7 +16,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <h2 class="page-header">
-                        <span contenteditable="true">{{ model.template.title }}</span>
+                        <span contenteditable="true">{{ invoice['template.title'] }}</span>
                         <small class="pull-right">{{ 'date'|trans }}: {{ model.invoiceDate|date_short }}</small>
                     </h2>
                 </div>
@@ -26,15 +26,16 @@
                 <div class="col-sm-5">
                     {{ 'invoice.to'|trans }}
                     <address contenteditable="true">
-                        <strong>{{ model.customer.company|default(model.customer.name) }}</strong><br>
-                        {{ model.customer.address|nl2br }}
-                        {% if model.customer.vatId is not empty %}
+                        <strong>{{ invoice['customer.company']|default(invoice['customer.name']) }}</strong><br>
+                        {{ invoice['customer.address']|nl2br }}
+                        {{ invoice['customer.country']|country_name }}
+                        {% if invoice['customer.vat_id'] is not empty %}
                             <br>
-                            {{ 'vat_id'|trans }}: {{ model.customer.vatId }}
+                            {{ 'vat_id'|trans }}: {{ invoice['customer.vat_id'] }}
                         {% endif %}
-                        {% if model.customer.number is not empty %}
+                        {% if invoice['customer.number'] is not empty %}
                             <br>
-                            {{ 'number'|trans }}: {{ model.customer.number }}
+                            {{ 'number'|trans }}: {{ invoice['customer.number'] }}
                         {% endif %}
                         {% if project is not null and project.orderNumber is not empty %}
                             <br>
@@ -47,11 +48,11 @@
                     {{ 'invoice.from'|trans }}
                     <address contenteditable="true">
                         <strong>{{ model.template.company }}</strong><br>
-                        {{ model.template.address|trim|nl2br }}
-                        {% if model.template.vatId is not empty %}
+                        {{ invoice['template.address']|trim|nl2br }}
+                        {% if invoice['template.vat_id'] is not empty %}
                             <br>
                             {{ 'vat_id'|trans }}:
-                            {{ model.template.vatId }}
+                            {{ invoice['template.vat_id'] }}
                         {% endif %}
                     </address>
                 </div>
@@ -61,7 +62,7 @@
                 <div class="col-sm-5">
                     <p contenteditable="true">
                         <strong>{{ 'invoice.number'|trans }}:</strong>
-                        {{ model.invoiceNumber }}
+                        {{ invoice['invoice.number'] }}
 
                         <br>
                         <strong>{{ 'invoice.due_days'|trans }}:</strong>
