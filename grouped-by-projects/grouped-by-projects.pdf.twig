@@ -600,7 +600,7 @@ mpdf-->
         </table>
     </div>
 
-    {% if model.template.paymentTerms is not empty %}
+    {% if invoice['template.payment_terms'] is not empty %}
         <div class="paymentTerms">
             <p>
                 {{ invoice['template.payment_terms']|md2html }}
