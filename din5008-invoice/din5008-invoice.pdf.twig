@@ -320,8 +320,8 @@ mpdf-->
                         {% set lineData = line|split(':', 2) %}
                         {% if lineData|length > 1 %}
                             <tr>
-                                <th class="invoice-details-label">{{ attribute(lineData, 0) }}:</th>
-                                <td class="invoice-details-value">{{ attribute(lineData, 1) }}</td>
+                                <th class="invoice-details-label">{{ lineData[0] }}:</th>
+                                <td class="invoice-details-value">{{ lineData[1] }}</td>
                             </tr>
                         {% endif %}
                     {% endfor %}
