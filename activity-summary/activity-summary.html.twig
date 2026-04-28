@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="{{ invoice['invoice.language'] }}">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>{{ invoice['invoice.number'] }}-{{ invoice['customer.company']|default(invoice['customer.name'])|u.snake }}</title>
+    <style>
+        {{ encore_entry_css_source('invoice')|raw }}
+    </style>
+</head>
+
+<body class="invoice_print">
+    <div class="wrapper">
+        <section class="invoice">
+            {% set activityTotals = {} %}
+            {% for timesheet in entries %}
+                {% set activityKey = timesheet['entry.activity'] is defined ? timesheet['entry.activity'] : 'No Activity' %}
+                {% set currentTotal = activityTotals[activityKey]|default(0) %}
+                {% set activityTotals = activityTotals|merge({ (activityKey): (currentTotal + timesheet['entry.amount']) }) %}
+            {% endfor %}
+
+            <p>
+                {{ 'invoice.total_working_time'|trans }}: {{ invoice['invoice.duration_decimal'] }}<br />
+                {% for activity, total in activityTotals|sort %}
+                    {{ activity }}: {{ total }}<br />
+                {% endfor %}
+            </p>
+        </section>
+    </div>
+</body>
+</html>
